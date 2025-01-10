@@ -59,12 +59,13 @@ function title_snake(string $subject, string $replace = '_'): string
     return str_replace(['-', '_'], $replace, $subject);
 }
 
-function replace_in_file(string $file, array $replacements): void 
+function replace_in_file(string $file, array $replacements): void
 {
     $file = trim($file);
-    
-    if (!file_exists($file)) {
+
+    if (! file_exists($file)) {
         writeln("Warning: File not found - {$file}");
+
         return;
     }
 
@@ -84,7 +85,7 @@ function replace_in_file(string $file, array $replacements): void
             throw new RuntimeException("Could not write to file: {$file}");
         }
     } catch (Exception $e) {
-        writeln("Error processing {$file}: " . $e->getMessage());
+        writeln("Error processing {$file}: ".$e->getMessage());
     }
 }
 
@@ -151,9 +152,10 @@ function replaceForWindows(): array
     return preg_split('/\\r\\n|\\r|\\n/', run('dir /S /B * | findstr /v /i .git\ | findstr /v /i vendor | findstr /v /i '.basename(__FILE__).' | findstr /r /i /M /F:/ ":author :vendor :package VendorName skeleton migration_table_name vendor_name vendor_slug author@domain.com"'));
 }
 
-function replaceForAllOtherOSes(): array 
+function replaceForAllOtherOSes(): array
 {
     $command = "find . -type f -not -path '*/vendor/*' -not -path '*/.git/*' -not -name '".basename(__FILE__)."' -exec grep -l ':author\|:vendor\|:package\|VendorName\|skeleton\|migration_table_name\|vendor_name\|vendor_slug\|author@domain.com' {} \\;";
+
     return array_filter(explode(PHP_EOL, run($command)));
 }
 
