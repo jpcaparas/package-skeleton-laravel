@@ -59,18 +59,33 @@ function title_snake(string $subject, string $replace = '_'): string
     return str_replace(['-', '_'], $replace, $subject);
 }
 
-function replace_in_file(string $file, array $replacements): void
+function replace_in_file(string $file, array $replacements): void 
 {
-    $contents = file_get_contents($file);
+    $file = trim($file);
+    
+    if (!file_exists($file)) {
+        writeln("Warning: File not found - {$file}");
+        return;
+    }
 
-    file_put_contents(
-        $file,
-        str_replace(
+    try {
+        $contents = file_get_contents($file);
+        if ($contents === false) {
+            throw new RuntimeException("Could not read file: {$file}");
+        }
+
+        $newContents = str_replace(
             array_keys($replacements),
             array_values($replacements),
             $contents
-        )
-    );
+        );
+
+        if (file_put_contents($file, $newContents) === false) {
+            throw new RuntimeException("Could not write to file: {$file}");
+        }
+    } catch (Exception $e) {
+        writeln("Error processing {$file}: " . $e->getMessage());
+    }
 }
 
 function remove_prefix(string $prefix, string $content): string
@@ -136,9 +151,10 @@ function replaceForWindows(): array
     return preg_split('/\\r\\n|\\r|\\n/', run('dir /S /B * | findstr /v /i .git\ | findstr /v /i vendor | findstr /v /i '.basename(__FILE__).' | findstr /r /i /M /F:/ ":author :vendor :package VendorName skeleton migration_table_name vendor_name vendor_slug author@domain.com"'));
 }
 
-function replaceForAllOtherOSes(): array
+function replaceForAllOtherOSes(): array 
 {
-    return explode(PHP_EOL, run('grep -E -r -l -i ":author|:vendor|:package|VendorName|skeleton|migration_table_name|vendor_name|vendor_slug|author@domain.com" --exclude-dir=vendor ./* ./.github/* | grep -v '.basename(__FILE__)));
+    $command = "find . -type f -not -path '*/vendor/*' -not -path '*/.git/*' -not -name '".basename(__FILE__)."' -exec grep -l ':author\|:vendor\|:package\|VendorName\|skeleton\|migration_table_name\|vendor_name\|vendor_slug\|author@domain.com' {} \\;";
+    return array_filter(explode(PHP_EOL, run($command)));
 }
 
 function getGitHubApiEndpoint(string $endpoint): ?stdClass
