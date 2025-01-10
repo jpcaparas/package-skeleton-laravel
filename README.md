@@ -18,7 +18,7 @@ This is where your description should go. Limit it to a paragraph or two. Consid
 
 ## Installation
 
-You can install the package via composer:
+You can install the package via [Composer](https://getcomposer.org/):
 
 ```bash
 composer require :vendor_slug/:package_slug
