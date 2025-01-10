@@ -35,7 +35,7 @@
     },
     "autoload": {
         "psr-4": {
-            "   \\Skeleton\\": "src/",
+            "VendorName\\Skeleton\\": "src/",
             "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
         }
     },

@@ -11,6 +11,8 @@ Follow these steps to get started:
 
 1. Press the "Use this template" button at the top of this repo to create a new repo with the contents of this skeleton.
 2. Run "php ./configure.php" to run a script that will replace all placeholders throughout all the files.
+3. Have fun (or not) creating your package.
+4. Consider visiting Spatie's [package guidelines](https://github.com/spatie/laravel-package-tools) for more information.
 ---
 <!--/delete-->
 This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
